@@ -1,6 +1,6 @@
 # Diseño de Base de Datos - Practica 1
 
-Ejercicios resueltos de la práctica 1 (voy a ir corrigiendo con lo que vaya preguntando en clase).
+Acá voy a ir subiendo los ejercicios resueltos de la práctica 2 (Modelado conceptual, lógico y físico)
 <br>
 <br>
 <br>
