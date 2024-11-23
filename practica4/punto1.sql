@@ -1,4 +1,3 @@
-use ejercicio01
 /**
 Cliente (idCliente, nombre, apellido, DNI, telefono, direccion)
 Factura (nroTicket, total, fecha, hora, idCliente (fk))
@@ -79,13 +78,32 @@ AND NOT EXIST (
 
 /** 7. Listar nroTicket, total, fecha, hora y DNI del cliente, de aquellas facturas donde se haya 
 comprado el producto ‘prod38’ o la factura tenga fecha de 2019.*/
+SELECT f.nroTicket, f.total, f.fecha, f.hora, c.DNI
+FROM Cliente f
+INNER JOIN Factura f ON (c.idCliente = f.idCliente)
+INNER JOIN Detalle d ON (f.nroTicket = d.nroTicket)
+INNER JOIN Producto p ON (d.idProducto = p.idProducto)
+WHERE (p.nombreP = 'prod38') OR (f.fecha BETWEEN '01/01/2019' AND '31/12/2019')
 
 /** 8. Agregar un cliente con los siguientes datos: nombre:’Jorge Luis’, apellido:’Castor’, 
 DNI: 40578999, teléfono: ‘221-4400789’, dirección:’11 entre 500 y 501 nro:2587’ y el id de 
 cliente: 500002. Se supone que el idCliente 500002 no existe.*/
+INSERT INTO Cliente (idCliente, nombre, apellido, DNI, telefono, direccion)
+VALUES ('Jorge Luis', 'Castor', 40578999, '221-4400789', '11 entre 500 y 501 nro:2587', 500002)
 
 /** 9. Listar nroTicket, total, fecha, hora para las facturas del cliente ´Jorge Pérez´ donde no 
 haya comprado el producto ´Z´.*/
+SELECT f.nroTicket, f.total, f.fecha, f.hora
+FROM Cliente c
+INNER JOIN Factura f ON (c.idCliente = f.idCliente)
+WHERE (c.nombre = 'Jorge') AND (c.apellido = 'Perez')
+EXCEPT
+    (SELECT f.nroTicket, f.total, f.fecha, f.hora
+    FROM Cliente c
+    INNER JOIN Factura f ON c.idCliente = f.idCliente
+    INNER JOIN Detalle d ON f.nroTicket = d.nroTicket
+    INNER JOIN Producto p ON d.idProducto = p.idProducto
+    WHERE c.nombre = 'Jorge' AND c.apellido = 'Perez' AND p.nombreP = 'Z')
 
 /** 10. Listar DNI, apellido y nombre de clientes donde el monto total comprado, teniendo en cuenta 
 todas sus facturas, supere $10.000.000.*/
