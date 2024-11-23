@@ -26,7 +26,7 @@ WHERE (p.fecha BETWEEN '01/01/2023' AND '31/12/2023')
 /** 3. Listar especie, años, calle, nro y localidad de árboles que no fueron podados nunca.*/
 SELECT a.especie, a.años, a.calle, a.nro, l.nombreL
 FROM Localidad l
-INNER JOIN Arbol a ON (a.codigoPostal = l.codigoPostal)
+INNER JOIN Arbol a ON (l.codigoPostal = a.codigoPostal)
 WHERE a.nroArbol NOT IN 
     (SELECT ar.nroArbol
     FROM Arbol ar
@@ -34,10 +34,29 @@ WHERE a.nroArbol NOT IN
   
 /** 4. Reportar especie, años,calle, nro y localidad de árboles que fueron podados durante 2022 y no
 fueron podados durante 2023.*/
+SELECT a.especie, a.años, a.calle, a.nro, l.nombreL
+FROM Localidad l 
+INNER JOIN Arbol a ON (l.codigoPostal = a.codigoPostal)  
+INNER JOIN Poda p ON (a.nroArbol = p.nroArbol)
+WHERE (p.fecha BETWEEN '01/01/2022' AND '31/12/2022')
+AND a.nroArbol NOT IN  
+    (SELECT ar.nroArbol
+    FROM Arbol ar
+    INNER JOIN Poda p ON (ar.nroArbol = p.nroArbol)
+    WHERE (p.fecha BETWEEN '01/01/2023' AND '31/12/2023'))
 
 /** 5. Reportar DNI, nombre, apellido, fecha de nacimiento y localidad donde viven de aquellos
 podadores con apellido terminado con el string ‘ata’ y que tengan al menos una poda durante
 2024. Ordenar por apellido y nombre.*/
+SELECT pr.DNI, pr.nombre, pr.apellido, pr.fnac, l.nombreL
+FROM Podador pr 
+INNER JOIN Localidad l (pr.codigoPostalVive = l.codigoPostal)
+WHERE (pr.apellido LIKE '%ata') 
+AND pr.DNI ON
+    (SELECT p.DNI
+    FROM Poda p
+    WHERE (p.fecha BETWEEN '01/01/2024' AND '31/12/2024'))
+ORDER BY pr.apellido, pr.nombre
 
 /** 6. Listar DNI, apellido, nombre, teléfono y fecha de nacimiento de podadores que solo podaron
 árboles de especie ‘Coníferas’.*/
