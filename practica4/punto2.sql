@@ -60,11 +60,38 @@ ORDER BY pr.apellido, pr.nombre
 
 /** 6. Listar DNI, apellido, nombre, teléfono y fecha de nacimiento de podadores que solo podaron
 árboles de especie ‘Coníferas’.*/
+SELECT pr.DNI, pr.apellido, pr.nombre, pr.telefono, pr.fnac
+FROM Podador Pr 
+INNER JOIN Poda p ON (pr.DNI = p.DNI)
+INNER JOIN Arbol a ON (p.nroArbol = a.nroArbol)
+WHERE a.especie = 'Coníferas'
+EXCEPT 
+    (SELECT pr.DNI, pr.apellido, pr.nombre, pr.telefono, pr.fnac
+    FROM Podador Pr 
+    INNER JOIN Poda p ON (pr.DNI = p.DNI)
+    INNER JOIN Arbol a ON (p.nroArbol = a.nroArbol)
+    WHERE a.especie <> 'Coníferas')
 
 /** 7. Listar especies de árboles que se encuentren en la localidad de ‘La Plata’ y también en la
 localidad de ‘Salta’.*/
+SELECT a.especie
+FROM Arbol a
+INNER JOIN Localidad l ON (a.codigoPostal = l.codigoPostal)
+WHERE (l.nombreL = 'La Plata')
+INTERSECT 
+    (SELECT ar.especie
+    FROM Arbol ar
+    INNER JOIN Localidad lo ON (ar.codigoPostal = lo.codigoPostal)
+    WHERE (lo.nombreL = 'Salta'))
 
 /** 8. Eliminar el podador con DNI 22234566.*/
+DELETE FROM Poda p WHERE p.DNI = 22234566
+DELETE FROM Podador pr WHERE pr.DNI = 22234566
 
 /** 9. Reportar nombre, descripción y cantidad de habitantes de localidades que tengan menos de 100
 árboles.*/
+SELECT l.nombreL, l.descripcion, l.#habitantes
+FROM Localidad l 
+INNER JOIN Arbol a ON (l.codigoPostal = a.codigoPostal)
+GROUP BY l. codigoPostal, l.nombreL, l.descripcion, l.#habitantes
+HAVING COUNT(a.nroArbol) < 100
