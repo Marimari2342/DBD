@@ -24,7 +24,14 @@ INNER JOIN Localidad l ON (pr.codigoPostalVive = l.codigoPostal)
 WHERE (p.fecha BETWEEN '01/01/2023' AND '31/12/2023')
 
 /** 3. Listar especie, años, calle, nro y localidad de árboles que no fueron podados nunca.*/
-
+SELECT a.especie, a.años, a.calle, a.nro, l.nombreL
+FROM Localidad l
+INNER JOIN Arbol a ON (a.codigoPostal = l.codigoPostal)
+WHERE a.nroArbol NOT IN 
+    (SELECT ar.nroArbol
+    FROM Arbol ar
+    INNER JOIN Poda p ON (ar.nroArbol = p.nroArbol))
+  
 /** 4. Reportar especie, años,calle, nro y localidad de árboles que fueron podados durante 2022 y no
 fueron podados durante 2023.*/
 
